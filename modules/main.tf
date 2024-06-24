@@ -8,6 +8,14 @@ terraform {
       version = "~> 5.26.0"
     }
   }
+
+  backend "s3" {
+    region = "eu-west-1"
+    profile = "dce-master"
+    bucket = "atc-terraform-backend-637423502760"
+    key    = "dce/terraform.tfstate"
+    dynamodb_table = "atc-terraform-backend"
+  }
 }
 
 provider "aws" {
