@@ -1,5 +1,5 @@
 api:
-  host: https://rbzj5mm5wh.execute-api.eu-west-1.amazonaws.com
+  host: rbzj5mm5wh.execute-api.eu-west-1.amazonaws.com
   basepath: /api
 region: eu-west-1
 terraform:
