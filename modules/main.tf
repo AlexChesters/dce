@@ -10,6 +10,11 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = "eu-west-1"
+  profile = "dce-master"
+}
+
 # Current AWS Account User
 data "aws_caller_identity" "current" {
 }

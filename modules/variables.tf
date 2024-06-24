@@ -1,6 +1,6 @@
 variable "aws_region" {
   description = "The AWS region for this Terraform run"
-  default     = "us-east-1"
+  default     = "eu-west-1"
 }
 
 variable "account_pool_metrics_toggle" {
@@ -30,21 +30,22 @@ variable "global_tags" {
 
 variable "namespace" {
   description = "The namespace for this Terraform run"
+  default     = "prod"
 }
 
 variable "reset_nuke_template_bucket" {
   description = "S3 bucket name containing the nuke configuration template. Use this to override the default nuke configuration."
-  default     = "STUB"
+  default     = "atc-aws-nuke-config"
 }
 
 variable "reset_nuke_template_key" {
   description = "S3 bucket object key for the nuke configuration template. Use this to override the default nuke configuration."
-  default     = "STUB"
+  default     = "config.yml"
 }
 
 variable "reset_build_image" {
   description = "Docker image to run the Reset CodeBuild."
-  default     = "aws/codebuild/standard:1.0"
+  default     = "aws/codebuild/standard:7.0"
 }
 
 variable "reset_compute_type" {
@@ -219,7 +220,8 @@ variable "principal_budget_period" {
 variable "allowed_regions" {
   type = list(string)
   default = [
-    "us-east-1"
+    "us-east-1",
+    "eu-west-1"
   ]
   description = "List of AWS regions which DCE Principals have access to. These regions will also be targeted for reset in nuke.yml."
 }
