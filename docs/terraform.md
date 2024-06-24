@@ -6,7 +6,7 @@ The AWS infrastructure for the DCE master account is defined as a Terraform modu
 cd modules
 terraform init
 terraform apply
-``` 
+```
 
 See [terraform.io](https://www.terraform.io/) for more information on using Terraform.\
 
@@ -14,7 +14,7 @@ After the Terraform deployment is complete, you will need to build and deploy th
 
 ```bash
 make deploy
-``` 
+```
 
 Alternatively, you can download the build artifacts from [a Github release](https://github.com/Optum/dce/releases), and deploy them directly.
 Both the `deploy.sh` and `build_artifacts.zip` are supplied with the github release:
@@ -23,22 +23,23 @@ Both the `deploy.sh` and `build_artifacts.zip` are supplied with the github rele
 cd modules
 namespace=$(terraform output namespace)
 artifacts_bucket=$(terraform output artifacts_bucket_name)
-deploy.sh build_artifacts.zip ${namespace} ${artifacts_bucket}
+profile=$(terraform output -raw aws_profile)
+deploy.sh build_artifacts.zip ${namespace} ${artifacts_bucket} ${profile}
 ```
 
 ## Configuring Terraform Variables
 
 The DCE Terraform module accepts a number of configuration variables to tweak the behavior of the DCE deployment. These variables can be provided to the `terraform apply` CLI command, or configured in a `tfvars` file.
- 
+
  For example:
- 
+
 ```bash
 terraform apply \
     -var namespace=nonprod \
     -var check_budget_enabled=false \
     -var-file my-dce.tfvars
 ```
- 
+
 See [Terraform documentation for details on configuring input variables](https://www.terraform.io/docs/configuration/variables.html).
 
 See [/modules/variables.tf](https://github.com/Optum/dce/blob/master/modules/variables.tf) for a full list of configurable Terraform variables.
@@ -55,11 +56,11 @@ terraform output api_url
 ```
 
 For a full list of available outputs, see [/modules/outputs.tf](https://github.com/Optum/dce/blob/master/modules/outputs.tf)
- 
- 
+
+
 ## Extending the Terraform Configuration
 
-You may want to extend the DCE Terraform configuration with our own infrastructure. For example, you may want to subscribe your own Lambda to DCE [SNS Lifecycle Events](sns.md). 
+You may want to extend the DCE Terraform configuration with our own infrastructure. For example, you may want to subscribe your own Lambda to DCE [SNS Lifecycle Events](sns.md).
 
 To do this, pull in the DCE Terraform module as a submodule from within your own Terraform configuration:
 

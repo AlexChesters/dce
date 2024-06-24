@@ -19,8 +19,8 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-west-1"
-  profile = "dce-master"
+  region = var.aws_region
+  profile = var.aws_profile
 }
 
 # Current AWS Account User

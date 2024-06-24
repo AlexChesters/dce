@@ -46,6 +46,10 @@ output "aws_region" {
   value = var.aws_region
 }
 
+output "aws_profile" {
+  value = var.aws_profile
+}
+
 output "lease_added_topic_id" {
   value = aws_sns_topic.lease_added.id
 }

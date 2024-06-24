@@ -3,6 +3,11 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
+variable "aws_profile" {
+  description = "The AWS profile for this Terraform run"
+  default     = "dce-master"
+}
+
 variable "account_pool_metrics_toggle" {
   description = "Set to 'true' to enable periodic scanning of the Accounts table for account status metrics. Defaults to 'false'"
   default     = "false"
