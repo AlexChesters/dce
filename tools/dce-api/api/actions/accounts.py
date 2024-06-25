@@ -16,8 +16,6 @@ def add_account(url, auth):
         "adminRoleArn": f"arn:aws:iam::{account_id}:role/DCEAdmin",
     }
 
-    print(body)
-
     r = requests.post(
         f"{url}/accounts",
         auth=auth,
@@ -27,3 +25,17 @@ def add_account(url, auth):
     r.raise_for_status()
 
     return r.json()
+
+def delete_account(url, auth):
+    answers = inquirer.prompt([inquirer.Text("account_id", message="What is the account ID?")])
+
+    account_id = str(answers["account_id"])
+
+    r = requests.delete(
+        f"{url}/accounts/{account_id}",
+        auth=auth,
+        timeout=5
+    )
+    r.raise_for_status()
+
+    return r.status_code

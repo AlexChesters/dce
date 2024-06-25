@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 import inquirer
 
 from api.utils.auth import get_auth
-from api.actions.accounts import list_accounts, add_account
+from api.actions.accounts import list_accounts, add_account, delete_account
 
 parser = argparse.ArgumentParser(description="interact with the DCE API")
 parser.add_argument("--api-url")
@@ -16,7 +16,8 @@ answers = inquirer.prompt([
         message="Which action do you want to perform?",
         choices=[
             ("List accounts", list_accounts),
-            ("Add new account", add_account)
+            ("Add new account", add_account),
+            ("Remove an account", delete_account)
         ]
     )
 ])
