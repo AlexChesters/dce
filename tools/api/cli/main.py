@@ -11,6 +11,7 @@ parser.add_argument("--api-url")
 args = parser.parse_args()
 
 url = urlparse(args.api_url)
+
 accounts_action = AccountsAction(url.geturl(), get_auth(url.hostname))
 
 answers = inquirer.prompt([
