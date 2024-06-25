@@ -50,6 +50,7 @@ presets:
         # DCE resources
         - "{{ .AdminRole}}"
         - "{{ .PrincipalRole}}"
+        - DCEPrincipal-dce
       IAMRolePolicy:
         # DCE resources
         - type: "contains"
@@ -60,11 +61,15 @@ presets:
           value: "{{ .PrincipalPolicy}}"
         - property: RoleName
           value: "OrganizationAccountAccessRole"
+        - property: RoleName
+          value: DCEPrincipal-dce
       IAMRolePolicyAttachment:
         # DCE resources
         - "{{ .PrincipalRole}} -> {{ .PrincipalPolicy}}"
         - property: RoleName
           value: "{{ .AdminRole}}"
+        - property: RoleName
+          value: DCEPrincipal-dce
   organisation:
     filters:
       IAMRole:
