@@ -14,8 +14,6 @@ locals {
   isPr = replace(var.namespace, "pr-", "") != var.namespace
 }
 
-# CodeBuild to create Azure AD Ent App for AWS Account
-# and configure SSO
 resource "aws_codebuild_project" "reset_build" {
   name          = "account-reset-${var.namespace}"
   description   = "Reset AWS child accounts"
