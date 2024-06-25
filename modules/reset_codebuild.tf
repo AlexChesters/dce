@@ -73,13 +73,13 @@ resource "aws_codebuild_project" "reset_build" {
 
     environment_variable {
       name  = "RESET_NUKE_TEMPLATE_BUCKET"
-      value = var.reset_nuke_template_bucket
+      value = aws_s3_bucket.nuke_config_bucket.id
       type  = "PLAINTEXT"
     }
 
     environment_variable {
       name  = "RESET_NUKE_TEMPLATE_KEY"
-      value = var.reset_nuke_template_key
+      value = local.aws_nuke_config_object_key
       type  = "PLAINTEXT"
     }
 
