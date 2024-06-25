@@ -130,21 +130,18 @@ resource "aws_codebuild_project" "reset_build" {
 resource "aws_iam_role" "codebuild_reset" {
   name = "account-reset-codebuild-${var.namespace}"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "codebuild.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "codebuild.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole"
+      }
+    ]
+  })
 
   tags = var.global_tags
 }
@@ -154,46 +151,45 @@ resource "aws_iam_role_policy" "codebuild_reset" {
   role = aws_iam_role.codebuild_reset.name
   name = "account-reset-codebuild-${var.namespace}"
 
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
+  policy = jsonencode(
     {
-      "Effect": "Allow",
-      "Resource": [
-        "*"
-      ],
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "sts:AssumeRole",
-        "ssm:GetParameter",
-        "dynamodb:GetItem",
-        "dynamodb:Scan",
-        "dynamodb:Query",
-        "dynamodb:UpdateItem",
-        "sns:Publish"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-          "s3:PutObject",
-          "s3:GetObject",
-          "s3:GetObjectVersion",
-          "s3:GetBucketAcl",
-          "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "${aws_s3_bucket.artifacts.arn}",
-        "${aws_s3_bucket.artifacts.arn}/*"
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Resource": [
+            "*"
+          ],
+          "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "sts:AssumeRole",
+            "ssm:GetParameter",
+            "dynamodb:GetItem",
+            "dynamodb:Scan",
+            "dynamodb:Query",
+            "dynamodb:UpdateItem",
+            "sns:Publish"
+          ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+              "s3:PutObject",
+              "s3:GetObject",
+              "s3:GetObjectVersion",
+              "s3:GetBucketAcl",
+              "s3:GetBucketLocation"
+          ],
+          "Resource": [
+            "${aws_s3_bucket.artifacts.arn}",
+            "${aws_s3_bucket.artifacts.arn}/*"
+          ]
+        }
       ]
     }
-  ]
-}
-POLICY
-
+  )
 }
 
 # Cloudwatch alarm, for Reset CodeBuild failure
