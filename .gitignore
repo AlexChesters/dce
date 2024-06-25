@@ -93,3 +93,6 @@ venv.bak/
 /site
 
 tests/integration/test.cfg
+
+# python
+__pycache__/
