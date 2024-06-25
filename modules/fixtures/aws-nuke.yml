@@ -40,11 +40,7 @@ presets:
       IAMRolePolicyAttachment:
         - type: "glob"
           value: "AWSReservedSSO_*"
-
-accounts:
-  "637423502760":
-    presets:
-      - "sso"
+  dce:
     filters:
       IAMPolicy:
         # DCE resources
@@ -54,6 +50,24 @@ accounts:
         # DCE resources
         - "{{ .AdminRole}}"
         - "{{ .PrincipalRole}}"
+      IAMRolePolicy:
+        # DCE resources
+        - type: "contains"
+          value: "{{ .AdminRole}}"
+        - type: "contains"
+          value: "{{ .PrincipalRole}}"
+        - type: "contains"
+          value: "{{ .PrincipalPolicy}}"
+        - property: RoleName
+          value: "OrganizationAccountAccessRole"
+      IAMRolePolicyAttachment:
+        # DCE resources
+        - "{{ .PrincipalRole}} -> {{ .PrincipalPolicy}}"
+        - property: RoleName
+          value: "{{ .AdminRole}}"
+  organisation:
+    filters:
+      IAMRole:
         # AWS Organizations resources
         - type: "contains"
           value: "OrganizationAccountAccessRole"
@@ -73,13 +87,7 @@ accounts:
         - type: glob
           value: "cloudwatch-log-group-enforcer--*"
       IAMRolePolicy:
-        # DCE resources
-        - type: "contains"
-          value: "{{ .AdminRole}}"
-        - type: "contains"
-          value: "{{ .PrincipalRole}}"
-        - type: "contains"
-          value: "{{ .PrincipalPolicy}}"
+        # AWS Organizations resources
         - property: RoleName
           value: "OrganizationAccountAccessRole"
         # StackSets
@@ -89,10 +97,6 @@ accounts:
         - type: glob
           value: "horatio-*"
       IAMRolePolicyAttachment:
-        # DCE resources
-        - "{{ .PrincipalRole}} -> {{ .PrincipalPolicy}}"
-        - property: RoleName
-          value: "{{ .AdminRole}}"
         # AWS Organizations resources
         - property: RoleName
           value: "OrganizationAccountAccessRole"
@@ -116,3 +120,20 @@ accounts:
         - audit-trail
       SNSTopic:
         - notification-topic
+
+accounts:
+  "905418121097":
+    presets:
+      - "sso"
+      - "dce"
+      - "organisation"
+  "891377354273":
+    presets:
+      - "sso"
+      - "dce"
+      - "organisation"
+  "471112670300":
+    presets:
+      - "sso"
+      - "dce"
+      - "organisation"
