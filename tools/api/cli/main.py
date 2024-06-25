@@ -3,8 +3,8 @@ from urllib.parse import urlparse
 
 import inquirer
 
-from api.utils.auth import get_auth
-from api.actions.accounts import list_accounts, add_account, delete_account
+from cli.utils.auth import get_auth
+from cli.actions.accounts import list_accounts, add_account, delete_account
 
 parser = argparse.ArgumentParser(description="interact with the DCE API")
 parser.add_argument("--api-url")
