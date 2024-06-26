@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import sys
 
 import inquirer
 
@@ -15,12 +16,28 @@ class LeasesAction(Action):
         return create_lease(self.url, self.auth, "quickstartuser", four_hours_from_now)
 
     def delete_lease(self):
+        current_pairs = [
+            (lease["principalId"], lease["accountId"])
+            for lease in self.list_leases()
+            if lease["leaseStatus"] == "Active"
+        ]
+
+        if not current_pairs:
+            print("there are no current active leases")
+            sys.exit(0)
+
+        pairs_choices = [
+            (f"{pair[0]} ({pair[1]})", pair)
+            for pair in current_pairs
+        ]
+
         answers = inquirer.prompt([
-            inquirer.Text(
-                "account_id",
-                message="Enter the account ID"
+            inquirer.List(
+                "pair",
+                message="Choose the lease to be deleted",
+                choices=pairs_choices
             )
         ])
-        account_id = str(answers["account_id"])
+        principal_id, account_id = answers["pair"]
 
-        return delete_lease(self.url, self.auth, "string", account_id)
+        return delete_lease(self.url, self.auth, principal_id, account_id)
