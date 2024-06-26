@@ -1,37 +1,41 @@
-from datetime import datetime, timedelta
+import sys
+
+from datetime import datetime
 
 import requests
 
-def list_leases(url, auth):
+def list_leases(url: str, auth):
     r = requests.get(url=f"{url}/leases", auth=auth, timeout=5)
     r.raise_for_status()
 
     return r.json()
 
-def create_lease(url, auth):
-    four_hours_from_now = datetime.now() + timedelta(hours=9)
-
+def create_lease(url: str, auth, principal_id: str, expires: datetime):
     body = {
-        "principalId": "alex@cheste.rs",
+        "principalId": principal_id,
         "budgetAmount": 10,
         "budgetCurrency": "USD",
         "budgetNotificationEmails": ["alex@cheste.rs"],
-        "expiresOn": four_hours_from_now.timestamp()
+        "expiresOn": expires.timestamp()
     }
 
     r = requests.post(
-        f"{url}/leades",
+        f"{url}/leases",
         auth=auth,
         timeout=5,
         json=body
     )
-    r.raise_for_status()
+
+    if not r.ok:
+        print(f"non-200 status code received: {r.status_code}")
+        print(r.json())
+        sys.exit(1)
 
     return r.json()
 
-def delete_lease(url, auth, account_id):
+def delete_lease(url: str, auth, principal_id: str, account_id: str):
     body = {
-        "principalId": "alex@cheste.rs",
+        "principalId": principal_id,
         "accountId": account_id
     }
 
@@ -41,6 +45,10 @@ def delete_lease(url, auth, account_id):
         timeout=5,
         json=body
     )
-    r.raise_for_status()
 
-    return r.status_code
+    if not r.ok:
+        print(f"non-200 status code received: {r.status_code}")
+        print(r.json())
+        sys.exit(1)
+
+    return r.json()

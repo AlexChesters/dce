@@ -32,7 +32,9 @@ match section_answers["action"]:
                 "action",
                 message="Which action do you want to perform?",
                 choices=[
-                    ("List leases", leases_action.list_leases)
+                    ("List leases", leases_action.list_leases),
+                    ("Create a lease", leases_action.create_lease),
+                    ("Delete a lease", leases_action.delete_lease)
                 ]
             )
         ])
