@@ -12,8 +12,15 @@ class LeasesAction(Action):
 
     def create_lease(self):
         four_hours_from_now = datetime.now() + timedelta(hours=8)
+        answers = inquirer.prompt(
+            inquirer.Text(
+                "principal_id",
+                message="Enter the name of the principal this lease is for"
+            )
+        )
+        principal_id = answers["principal_id"]
 
-        return create_lease(self.url, self.auth, "quickstartuser", four_hours_from_now)
+        return create_lease(self.url, self.auth, principal_id, four_hours_from_now)
 
     def delete_lease(self):
         current_pairs = [
