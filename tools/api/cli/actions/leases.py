@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import sys
-import uuid
 
 import inquirer
 
@@ -17,6 +16,9 @@ class LeasesAction(Action):
             for lease in list_leases(self.url, self.auth)
             if lease["leaseStatus"] == "Active"
         ]
+
+    def __lease_to_choice(self, lease):
+        return (f"{lease["principalId"]} ({lease["accountId"]})", lease)
 
     def list_leases(self):
         leases = list_leases(self.url, self.auth)
@@ -47,32 +49,33 @@ class LeasesAction(Action):
             print("there are no active leases")
             sys.exit(0)
 
-        leases_choices = [
-            (f"{lease["principalId"]} ({lease["accountId"]})", lease)
-            for lease in active_leases
-        ]
-
         answers = inquirer.prompt([
             inquirer.List(
-                "pair",
+                "lease",
                 message="Choose the lease to be deleted",
-                choices=leases_choices
+                choices=[self.__lease_to_choice(lease) for lease in active_leases]
             )
         ])
-        principal_id, account_id = answers["pair"]
+        principal_id = answers["lease"]["principalId"]
+        account_id = answers["lease"]["accountId"]
 
         logger.plain(delete_lease(self.url, self.auth, principal_id, account_id))
 
     def create_lease_auth(self):
-        lease_id = uuid.uuid4()
         active_leases = self.__get_active_leases()
 
         if not active_leases:
             print("there are no active leases")
             sys.exit(0)
 
-        print(active_leases)
-        sys.exit(0)
+        answers = inquirer.prompt([
+            inquirer.List(
+                "lease",
+                message="Choose the lease to create an auth for",
+                choices=[self.__lease_to_choice(lease) for lease in active_leases]
+            )
+        ])
+        lease_id = answers["lease"]["id"]
 
         lease_data = create_lease_auth(self.url, self.auth, lease_id)
         logger.plain(lease_data)
