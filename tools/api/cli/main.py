@@ -24,7 +24,6 @@ section_answers = inquirer.prompt([
     )
 ])
 
-
 match section_answers["action"]:
     case "leases":
         answers = inquirer.prompt([
