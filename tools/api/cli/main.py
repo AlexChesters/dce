@@ -34,7 +34,8 @@ match section_answers["action"]:
                 choices=[
                     ("List leases", leases_action.list_leases),
                     ("Create a lease", leases_action.create_lease),
-                    ("Delete a lease", leases_action.delete_lease)
+                    ("Delete a lease", leases_action.delete_lease),
+                    ("Create a lease authentication", leases_action.create_lease_auth)
                 ]
             )
         ])

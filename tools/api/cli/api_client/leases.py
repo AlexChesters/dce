@@ -1,5 +1,4 @@
 import sys
-
 from datetime import datetime
 
 import requests
@@ -16,7 +15,7 @@ def create_lease(url: str, auth, principal_id: str, expires: datetime):
         "budgetAmount": 10,
         "budgetCurrency": "USD",
         "budgetNotificationEmails": ["alex@cheste.rs"],
-        "expiresOn": expires.timestamp()
+        "expiresOn": int(expires.timestamp())
     }
 
     r = requests.post(
@@ -52,3 +51,27 @@ def delete_lease(url: str, auth, principal_id: str, account_id: str):
         sys.exit(1)
 
     return r.json()
+
+def create_lease_auth(url: str, auth, lease_id: str):
+    r = requests.post(
+        f"{url}/leases/{lease_id}",#
+        auth=auth,
+        timeout=5
+    )
+
+    if not r.ok:
+        print(f"non-200 status code received: {r.status_code}")
+        print(r.json())
+        sys.exit(1)
+
+    data = r.json()
+
+    return {
+        "credentials": {
+            "access_key_id": data["accessKeyId"],
+            "secret_access_key": data["secretAccessKey"],
+            "session_token": data["sessionToken"]
+        },
+        "console_url": data["consoleUrl"],
+        "lease_id": lease_id
+    }
