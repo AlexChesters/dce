@@ -13,7 +13,7 @@ logger = Logger()
 class LeasesAction(Action):
     def __get_active_leases(self):
         return [
-            (lease["principalId"], lease["accountId"])
+            lease
             for lease in list_leases(self.url, self.auth)
             if lease["leaseStatus"] == "Active"
         ]
@@ -48,8 +48,8 @@ class LeasesAction(Action):
             sys.exit(0)
 
         leases_choices = [
-            (f"{pair[0]} ({pair[1]})", pair)
-            for pair in active_leases
+            (f"{lease["principalId"]} ({lease["accountId"]})", lease)
+            for lease in active_leases
         ]
 
         answers = inquirer.prompt([
@@ -70,6 +70,9 @@ class LeasesAction(Action):
         if not active_leases:
             print("there are no active leases")
             sys.exit(0)
+
+        print(active_leases)
+        sys.exit(0)
 
         lease_data = create_lease_auth(self.url, self.auth, lease_id)
         logger.plain(lease_data)

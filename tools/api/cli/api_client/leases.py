@@ -54,7 +54,7 @@ def delete_lease(url: str, auth, principal_id: str, account_id: str):
 
 def create_lease_auth(url: str, auth, lease_id: str):
     r = requests.post(
-        f"{url}/leases/{lease_id}",#
+        f"{url}/leases/{lease_id}",
         auth=auth,
         timeout=5
     )
