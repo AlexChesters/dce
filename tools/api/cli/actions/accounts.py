@@ -2,12 +2,15 @@ import sys
 
 import inquirer
 
+from cli.utils.logger import Logger
 from cli.api_client.accounts import list_accounts, add_account, delete_account
 from cli.actions import Action
 
+logger = Logger()
+
 class AccountsAction(Action):
     def list_accounts(self):
-        return list_accounts(self.url, self.auth)
+        logger.plain(list_accounts(self.url, self.auth))
 
     def add_account(self):
         sandbox_accounts_ids = [
@@ -16,7 +19,7 @@ class AccountsAction(Action):
             "471112670300" # charlie
         ]
 
-        accounts_in_pool = [account["id"] for account in self.list_accounts()]
+        accounts_in_pool = [account["id"] for account in list_accounts(self.url, self.auth)]
 
         answers = inquirer.prompt([
             inquirer.List(
@@ -27,10 +30,10 @@ class AccountsAction(Action):
         ])
         account_id = str(answers["account_id"])
 
-        return add_account(self.url, self.auth, account_id)
+        logger.plain(add_account(self.url, self.auth, account_id))
 
     def delete_account(self):
-        accounts = self.list_accounts()
+        accounts = list_accounts(self.url, self.auth)
 
         if not accounts:
             print("[ERROR] - no accounts are currently in the pool")
@@ -47,4 +50,4 @@ class AccountsAction(Action):
         ])
         account_id = str(answers["account_id"])
 
-        return delete_account(self.url, self.auth, account_id)
+        logger.plain(delete_account(self.url, self.auth, account_id))

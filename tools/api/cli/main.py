@@ -53,5 +53,4 @@ match section_answers["action"]:
                 ]
             )
         ])
-        fn = answers["action"]
-        print(fn())
+        answers["action"]()

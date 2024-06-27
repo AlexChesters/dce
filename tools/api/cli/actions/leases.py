@@ -4,19 +4,29 @@ import uuid
 
 import inquirer
 
+from cli.utils.logger import Logger
 from cli.api_client.leases import list_leases, create_lease, delete_lease, create_lease_auth
 from cli.actions import Action
+
+logger = Logger()
 
 class LeasesAction(Action):
     def __get_active_leases(self):
         return [
             (lease["principalId"], lease["accountId"])
-            for lease in self.list_leases()
+            for lease in list_leases(self.url, self.auth)
             if lease["leaseStatus"] == "Active"
         ]
 
     def list_leases(self):
-        return list_leases(self.url, self.auth)
+        leases = list_leases(self.url, self.auth)
+
+        for lease in leases:
+            principal = lease["principalId"]
+            account = lease["accountId"]
+            status = lease["leaseStatus"]
+
+            logger.plain(f"{principal} - {account} ({status})")
 
     def create_lease(self):
         four_hours_from_now = datetime.now() + timedelta(hours=8)
@@ -28,7 +38,7 @@ class LeasesAction(Action):
         ])
         principal_id = answers["principal_id"]
 
-        return create_lease(self.url, self.auth, principal_id, four_hours_from_now)
+        logger.plain(create_lease(self.url, self.auth, principal_id, four_hours_from_now))
 
     def delete_lease(self):
         active_leases = self.__get_active_leases()
@@ -51,7 +61,7 @@ class LeasesAction(Action):
         ])
         principal_id, account_id = answers["pair"]
 
-        return delete_lease(self.url, self.auth, principal_id, account_id)
+        logger.plain(delete_lease(self.url, self.auth, principal_id, account_id))
 
     def create_lease_auth(self):
         lease_id = uuid.uuid4()
@@ -62,4 +72,4 @@ class LeasesAction(Action):
             sys.exit(0)
 
         lease_data = create_lease_auth(self.url, self.auth, lease_id)
-        print(lease_data)
+        logger.plain(lease_data)
